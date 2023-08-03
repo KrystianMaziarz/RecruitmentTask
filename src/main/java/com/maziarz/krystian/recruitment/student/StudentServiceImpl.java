@@ -31,7 +31,7 @@ public class StudentServiceImpl implements StudentService {
 
   @Override
   public StudentResponseDto findById(Long id) {
-    StudentEntity studentEntity = checkIfStudentExists(id);
+    StudentEntity studentEntity = getStudentOrThrowStudentNotFoundException(id);
 
     return studentMapper.mapStudentEntityToResponseDto(studentEntity);
   }
@@ -57,7 +57,7 @@ public class StudentServiceImpl implements StudentService {
   @Override
   @Transactional
   public StudentResponseDto updateStudent(Long id, StudentRequestDto studentRequestDto) {
-    StudentEntity studentEntity = checkIfStudentExists(id);
+    StudentEntity studentEntity = getStudentOrThrowStudentNotFoundException(id);
 
     studentEntity.setFirstName(studentRequestDto.getFirstName());
     studentEntity.setLastName(studentRequestDto.getLastName());
@@ -69,7 +69,7 @@ public class StudentServiceImpl implements StudentService {
   @Override
   @Transactional
   public StudentAddLectureResponseDto addLectureToStudent(Long studentId, Long lectureId) {
-    StudentEntity studentEntity = checkIfStudentExists(studentId);
+    StudentEntity studentEntity = getStudentOrThrowStudentNotFoundException(studentId);
     LectureEntity lectureEntity = lectureService.checkIfLectureExists(lectureId);
     studentEntity.addLecture(lectureEntity);
     log.info(
@@ -80,7 +80,7 @@ public class StudentServiceImpl implements StudentService {
         studentEntity, lectureEntity.getName());
   }
 
-  private StudentEntity checkIfStudentExists(Long studentId) {
+  private StudentEntity getStudentOrThrowStudentNotFoundException(Long studentId) {
     return studentRepository
         .findById(studentId)
         .orElseThrow(() -> new StudentNotFoundException(studentId));

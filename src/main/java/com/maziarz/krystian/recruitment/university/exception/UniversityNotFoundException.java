@@ -1,6 +1,8 @@
 package com.maziarz.krystian.recruitment.university.exception;
 
-public class UniversityNotFoundException extends RuntimeException {
+import com.maziarz.krystian.recruitment.commons.NotFoundException;
+
+public class UniversityNotFoundException extends NotFoundException {
 
   public UniversityNotFoundException(Long id) {
     super(buildErrorMessage(id));

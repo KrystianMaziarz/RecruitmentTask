@@ -1,6 +1,8 @@
 package com.maziarz.krystian.recruitment.lecture.exception;
 
-public class LectureNotFoundException extends RuntimeException {
+import com.maziarz.krystian.recruitment.commons.NotFoundException;
+
+public class LectureNotFoundException extends NotFoundException {
 
   public LectureNotFoundException(Long id) {
     super(buildErrorMessage(id));
