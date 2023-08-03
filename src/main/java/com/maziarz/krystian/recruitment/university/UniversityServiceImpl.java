@@ -5,11 +5,13 @@ import com.maziarz.krystian.recruitment.university.dto.UniversityResponseDto;
 import com.maziarz.krystian.recruitment.university.exception.UniversityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UniversityServiceImpl implements UniversityService {
 
   private final UniversityRepository universityRepository;
@@ -33,6 +35,7 @@ public class UniversityServiceImpl implements UniversityService {
   @Override
   public void deleteById(Long id) {
     universityRepository.deleteById(id);
+    log.info("University deleted. id: {}", id);
   }
 
   @Override
@@ -40,8 +43,9 @@ public class UniversityServiceImpl implements UniversityService {
   public UniversityResponseDto addUniversity(UniversityRequestDto universityRequestDto) {
     UniversityEntity universityEntity =
         universityMapper.mapUniversityRequestDtoToEntity(universityRequestDto);
-    universityRepository.save(universityEntity);
-    return universityMapper.mapUniversityEntityToResponseDto(universityEntity);
+    UniversityEntity savedEntity = universityRepository.save(universityEntity);
+    log.info("University created. id: {}", savedEntity.getId());
+    return universityMapper.mapUniversityEntityToResponseDto(savedEntity);
   }
 
   @Override
@@ -52,7 +56,7 @@ public class UniversityServiceImpl implements UniversityService {
         universityRepository.findById(id).orElseThrow(() -> new UniversityNotFoundException(id));
     universityEntity.setName(universityRequestDto.getName());
     universityEntity.setAddress(universityRequestDto.getAddress());
-
+    log.info("University updated. id: {}", universityEntity.getId());
     return universityMapper.mapUniversityEntityToResponseDto(universityEntity);
   }
 

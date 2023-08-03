@@ -75,6 +75,7 @@ class StudentServiceImplTest {
     var requestDtoForAddStudent = getStudentRequestDto();
     var expected = getStudentEntityWithoutId();
     doNothing().when(universityService).checkIfUniversityExists(UNIVERSITY_ID);
+    when(studentRepository.save(any(StudentEntity.class))).thenReturn(expected);
     // when
     studentService.addStudent(requestDtoForAddStudent);
     // then

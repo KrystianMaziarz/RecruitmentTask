@@ -9,11 +9,13 @@ import com.maziarz.krystian.recruitment.student.exception.StudentNotFoundExcepti
 import com.maziarz.krystian.recruitment.university.UniversityService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class StudentServiceImpl implements StudentService {
 
   private final StudentRepository studentRepository;
@@ -38,6 +40,7 @@ public class StudentServiceImpl implements StudentService {
   public void deleteById(Long id) {
 
     studentRepository.deleteById(id);
+    log.info("Student deleted. id: {}", id);
   }
 
   @Override
@@ -46,7 +49,8 @@ public class StudentServiceImpl implements StudentService {
     universityService.checkIfUniversityExists(studentRequestDto.getUniversityId());
     StudentEntity studentEntity = studentMapper.mapStudentRequestDtoToEntity(studentRequestDto);
     studentEntity.addUniversity(studentRequestDto.getUniversityId());
-    studentRepository.save(studentEntity);
+    StudentEntity savedEntity = studentRepository.save(studentEntity);
+    log.info("Student created. id: {}", savedEntity.getId());
     return studentMapper.mapStudentEntityToResponseDto(studentEntity);
   }
 
@@ -58,7 +62,7 @@ public class StudentServiceImpl implements StudentService {
     studentEntity.setFirstName(studentRequestDto.getFirstName());
     studentEntity.setLastName(studentRequestDto.getLastName());
     studentEntity.setGender(studentRequestDto.getGender());
-
+    log.info("Student updated. id: {}", studentEntity.getId());
     return studentMapper.mapStudentEntityToResponseDto(studentEntity);
   }
 
@@ -68,6 +72,10 @@ public class StudentServiceImpl implements StudentService {
     StudentEntity studentEntity = checkIfStudentExists(studentId);
     LectureEntity lectureEntity = lectureService.checkIfLectureExists(lectureId);
     studentEntity.addLecture(lectureEntity);
+    log.info(
+        "Lecture with id: {} added to student with id: {}",
+        lectureEntity.getId(),
+        studentEntity.getId());
     return studentMapper.mapStudentEntityToStudentAddLectureResponseDto(
         studentEntity, lectureEntity.getName());
   }

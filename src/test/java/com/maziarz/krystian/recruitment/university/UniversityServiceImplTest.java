@@ -59,6 +59,7 @@ class UniversityServiceImplTest {
     var argumentCaptor = ArgumentCaptor.forClass(UniversityEntity.class);
     var requestDtoForAddUniversity = getUniversityRequestDtoForAddUniversity();
     var expected = getUniversityEntityWithoutId();
+    when(universityRepository.save(any(UniversityEntity.class))).thenReturn(expected);
     // when
     universityService.addUniversity(requestDtoForAddUniversity);
     // then

@@ -6,11 +6,13 @@ import com.maziarz.krystian.recruitment.lecture.exception.LectureNotFoundExcepti
 import com.maziarz.krystian.recruitment.university.UniversityService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LectureServiceImpl implements LectureService {
   private final LectureRepository lectureRepository;
   private final UniversityService universityService;
@@ -36,6 +38,7 @@ public class LectureServiceImpl implements LectureService {
   @Override
   public void deleteById(Long id) {
     lectureRepository.deleteById(id);
+    log.info("Lecture deleted. id: {}", id);
   }
 
   @Override
@@ -44,8 +47,9 @@ public class LectureServiceImpl implements LectureService {
     universityService.findById(lectureRequestDto.getUniversityId());
     LectureEntity lectureEntity = lectureMapper.mapLectureRequestDtoToEntity(lectureRequestDto);
     lectureEntity.addUniversity(lectureRequestDto.getUniversityId());
-    lectureRepository.save(lectureEntity);
-    return lectureMapper.mapLectureEntityToResponseDto(lectureEntity);
+    LectureEntity savedEntity = lectureRepository.save(lectureEntity);
+    log.info("Lecture created. id: {}", savedEntity.getId());
+    return lectureMapper.mapLectureEntityToResponseDto(savedEntity);
   }
 
   @Override
@@ -57,6 +61,7 @@ public class LectureServiceImpl implements LectureService {
     lectureEntity.setName(lectureRequestDto.getName());
     lectureEntity.setLectureTime(lectureRequestDto.getLectureTime());
     lectureEntity.setDescription(lectureRequestDto.getDescription());
+    log.info("Lecture updated. id: {}", lectureEntity.getId());
     return lectureMapper.mapLectureEntityToResponseDto(lectureEntity);
   }
 

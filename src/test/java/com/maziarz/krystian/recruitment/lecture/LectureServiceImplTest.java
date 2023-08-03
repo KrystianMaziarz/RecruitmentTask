@@ -74,6 +74,7 @@ class LectureServiceImplTest {
     var requestDtoForAddLecture = getLectureRequestDtoForAddLecture();
     var expected = getLectureEntityWithoutId();
     doNothing().when(universityService).checkIfUniversityExists(UNIVERSITY_ID);
+    when(lectureRepository.save(any(LectureEntity.class))).thenReturn(expected);
     // when
     lectureService.addLecture(requestDtoForAddLecture);
     // then
